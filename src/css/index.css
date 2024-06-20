@@ -1,0 +1,25 @@
+@font-face {
+    font-family: "Rubik";
+    src: url("../public/fonts/Rubik-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+:root {
+    font-family: "Rubik", sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+}
+
+body {
+    background: radial-gradient(circle at 50% -50%, #89fff6, white 70%)
+        no-repeat;
+    background-size: 100% 200%;
+    margin: 0;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
