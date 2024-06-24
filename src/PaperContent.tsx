@@ -13,6 +13,7 @@ import { ListItem } from "@tiptap/extension-list-item";
 import { Link } from "@tiptap/extension-link";
 import { OrderedList } from "@tiptap/extension-ordered-list";
 import { Paragraph } from "@tiptap/extension-paragraph";
+import { EditorOptions } from "@tiptap/core";
 import { Placeholder } from "@tiptap/extension-placeholder";
 import { Strike } from "@tiptap/extension-strike";
 import { Subscript } from "@tiptap/extension-subscript";
@@ -36,16 +37,17 @@ import {
   MenuButtonEditLink,
   MenuButtonItalic,
   MenuButtonOrderedList,
-  MenuButtonRemoveFormatting,
   MenuButtonStrikethrough,
   MenuButtonSubscript,
   MenuButtonSuperscript,
   MenuButtonTaskList,
   MenuControlsContainer,
+  MenuButtonAddImage,
   MenuDivider,
   MenuSelectHeading,
   ResizableImage,
   RichTextEditor,
+  insertImages,
   TableBubbleMenu,
   TableImproved,
   type RichTextEditorRef,
@@ -53,8 +55,7 @@ import {
 import UpperBar from "./UpperBar";
 import { Box, Button, Divider } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useRef, useState } from "react";
-
+import { useRef, useState, useCallback } from "react";
 
 const exampleContent =
   '<h2>Hey there 👋</h2><p>This is a <em>basic</em> example of using <a target="_blank" rel="noopener noreferrer nofollow" href="https://tiptap.dev/">Tiptap</a> with <a target="_blank" rel="noopener noreferrer nofollow" href="https://mui.com/">MUI (Material-UI)</a>. Sure, there are all kind of <strong>basic text styles</strong> you’d probably expect from a text editor. But wait until you see the lists:</p><ul><li><p>That’s a bullet list with one …</p></li><li><p>… or two list items.</p></li></ul><p>Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try <code>inline code</code> and a code block:</p><pre><code class="language-css">body {\n  display: none;\n}</code></pre><p></p><p>It’s only the tip of the iceberg though. Give it a try and click a little bit around. And feel free to add and resize cat photos:</p><img height="auto" src="http://placekitten.com/g/500" alt="wat" width="257" style="aspect-ratio: 1 / 1"><p></p><p>Organize information in tables:</p><table><tbody><tr><th colspan="1" rowspan="1"><p>Name</p></th><th colspan="1" rowspan="1"><p>Role</p></th><th colspan="1" rowspan="1"><p>Team</p></th></tr><tr><td colspan="1" rowspan="1"><p>Alice</p></td><td colspan="1" rowspan="1"><p>PM</p></td><td colspan="1" rowspan="1"><p>Internal tools</p></td></tr><tr><td colspan="1" rowspan="1"><p>Bob</p></td><td colspan="1" rowspan="1"><p>Software</p></td><td colspan="1" rowspan="1"><p>Infrastructure</p></td></tr></tbody></table><p></p><p>Or write down your groceries:</p><ul data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>Milk</p></div></li><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>Eggs</p></div></li><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>Sriracha</p></div></li></ul><blockquote><p>Wow, that’s amazing. Good work, boy! 👏 <br>— Mom</p></blockquote><p>Give it a try!</p>';
@@ -139,12 +140,83 @@ const extensions = [
   History,
 ];
 
+function fileListToImageFiles(fileList: FileList): File[] {
+    return Array.from(fileList).filter((file) => {
+      const mimeType = (file.type || "").toLowerCase();
+      return mimeType.startsWith("image/");
+    });
+  }
+
 export default function PaperContent() {
   // This comopnent stores all the components in the paper
 
   const rteRef = useRef<RichTextEditorRef>(null);
 
   const [htmlResult, setHtmlResult] = useState("");
+
+  const handleNewImageFiles = useCallback(
+    (files: File[], insertPosition?: number): void => {
+      if (!rteRef.current?.editor) {
+        return;
+      }
+
+      const attributesForImageFiles = files.map((file) => ({
+        src: URL.createObjectURL(file),
+        alt: file.name,
+      }));
+
+      insertImages({
+        images: attributesForImageFiles,
+        editor: rteRef.current.editor,
+        position: insertPosition,
+      });
+    },
+    []
+  );
+
+  const handleDrop: NonNullable<EditorOptions["editorProps"]["handleDrop"]> =
+    useCallback(
+      (view, event, _slice, _moved) => {
+        if (!(event instanceof DragEvent) || !event.dataTransfer) {
+          return false;
+        }
+
+        const imageFiles = fileListToImageFiles(event.dataTransfer.files);
+        if (imageFiles.length > 0) {
+          const insertPosition = view.posAtCoords({
+            left: event.clientX,
+            top: event.clientY,
+          })?.pos;
+
+          handleNewImageFiles(imageFiles, insertPosition);
+          event.preventDefault();
+          return true;
+        }
+
+        return false;
+      },
+      [handleNewImageFiles]
+    );
+
+  const handlePaste: NonNullable<EditorOptions["editorProps"]["handlePaste"]> =
+    useCallback(
+      (_view, event, _slice) => {
+        if (!event.clipboardData) {
+          return false;
+        }
+
+        const pastedImageFiles = fileListToImageFiles(
+          event.clipboardData.files
+        );
+        if (pastedImageFiles.length > 0) {
+          handleNewImageFiles(pastedImageFiles);
+          return true;
+        }
+
+        return false;
+      },
+      [handleNewImageFiles]
+    );
 
   return (
     <>
@@ -174,6 +246,10 @@ export default function PaperContent() {
               ref={rteRef}
               content={exampleContent}
               extensions={extensions}
+              editorProps={{
+                handleDrop: handleDrop,
+                handlePaste: handlePaste,
+              }}
               className="rich-text-editor"
               renderControls={() => (
                 <MenuControlsContainer>
@@ -211,6 +287,21 @@ export default function PaperContent() {
 
                   <MenuButtonAddTable />
 
+                  <MenuButtonAddImage
+                    onClick={() => {
+                      const fileInput = document.createElement("input");
+                      fileInput.type = "file";
+                      fileInput.accept = "image/*";
+                      fileInput.multiple = true;
+                      fileInput.onchange = (event) => {
+                        const files = (event.target as HTMLInputElement).files;
+                        if (files) {
+                          handleNewImageFiles(Array.from(files));
+                        }
+                      };
+                      fileInput.click();
+                    }}
+                  />
                 </MenuControlsContainer>
               )}
             >
