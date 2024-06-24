@@ -245,7 +245,7 @@ export default function PaperContent() {
                 alignItems: "center",
                 justifyContent: "center",
                 margin: "0 auto",
-                paddingLeft: "21px",
+                paddingLeft: "1.8vw",
                 maxWidth: "calc(100% - 40px)", // Adjust the value as needed for margins
                 gap: 2, // Adjust the gap between elements as needed
               }}
