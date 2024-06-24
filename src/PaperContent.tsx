@@ -52,12 +52,12 @@ import {
   type RichTextEditorRef,
 } from "mui-tiptap";
 import UpperBar from "./UpperBar";
+import MultiEmail from "./utils/MultiEmail";
 import { Box, Button, Divider } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useRef, useState, useCallback } from "react";
 
-const exampleContent =
-  '<p>מה תרצו לכתוב היום?</p>';
+const exampleContent = "<p>מה תרצו לכתוב היום?</p>";
 
 const CustomLinkExtension = Link.extend({
   inclusive: false,
@@ -136,18 +136,24 @@ const extensions = [
 ];
 
 function fileListToImageFiles(fileList: FileList): File[] {
-    return Array.from(fileList).filter((file) => {
-      const mimeType = (file.type || "").toLowerCase();
-      return mimeType.startsWith("image/");
-    });
-  }
+  return Array.from(fileList).filter((file) => {
+    const mimeType = (file.type || "").toLowerCase();
+    return mimeType.startsWith("image/");
+  });
+}
 
 export default function PaperContent() {
   // This comopnent stores all the components in the paper
 
   const rteRef = useRef<RichTextEditorRef>(null);
 
-  const [htmlResult, setHtmlResult] = useState("");
+  const [htmlResult, setHtmlResult] = useState<string>("");
+  const [emails, setEmails] = useState<string[]>([]);
+
+  const handleSubmit = () => {
+    // Handle the submit action, e.g., send the emails using Gmail API
+    console.log('Emails to send:', emails);
+  };
 
   const handleNewImageFiles = useCallback(
     (files: File[], insertPosition?: number): void => {
@@ -226,17 +232,30 @@ export default function PaperContent() {
                 width: "95%",
                 direction: "rtl",
                 textAlign: "right",
+                marginRight: "50px",
               },
             }}
             noValidate
             autoComplete="off"
           >
-            <TextField id="to-textfield" label="To" variant="standard" />
-            <TextField
-              id="subject-textfield"
-              label="Subject"
-              variant="standard"
-            />
+            <Box sx={{
+              "& > :not(style)": {
+                m: 1,
+                width: "100%",
+                direction: "rtl",
+                textAlign: "right",
+                paddingLeft: "50px",
+                justifyContent: "center",
+              },
+            }}>
+                <MultiEmail emails={emails} setEmails={setEmails}/>
+                <TextField id="to-textfield" label="To" variant="standard" />
+                <TextField
+                id="subject-textfield"
+                label="Subject"
+                variant="standard"
+                />
+            </Box>
             <RichTextEditor
               ref={rteRef}
               content={exampleContent}
@@ -312,10 +331,9 @@ export default function PaperContent() {
 
             <Button
               onClick={() => {
-                setHtmlResult(rteRef.current?.editor?.getHTML() ?? "")
+                setHtmlResult(rteRef.current?.editor?.getHTML() ?? "");
                 console.log(htmlResult);
-              }
-              }
+              }}
             >
               Save and display HTML
             </Button>

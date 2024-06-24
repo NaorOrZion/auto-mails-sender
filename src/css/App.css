@@ -55,3 +55,12 @@
   margin: 2vh auto !important;
   margin-bottom: 0;
 }
+
+#to-textfield {
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+#emails-input-stack {
+  
+}
