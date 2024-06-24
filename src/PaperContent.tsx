@@ -152,7 +152,7 @@ export default function PaperContent() {
 
   const handleSubmit = () => {
     // Handle the submit action, e.g., send the emails using Gmail API
-    console.log('Emails to send:', emails);
+    console.log("Emails to send:", emails);
   };
 
   const handleNewImageFiles = useCallback(
@@ -223,7 +223,7 @@ export default function PaperContent() {
     <>
       <Box sx={{ flexGrow: 3 }}>
         <UpperBar />
-        <div className="myprettyform">
+        {/* <div className="myprettyform"> */}
           <Box
             component="form"
             sx={{
@@ -238,23 +238,25 @@ export default function PaperContent() {
             noValidate
             autoComplete="off"
           >
-            <Box sx={{
-              "& > :not(style)": {
-                m: 1,
-                width: "100%",
-                direction: "rtl",
-                textAlign: "right",
-                paddingLeft: "50px",
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "center",
-              },
-            }}>
-                <MultiEmail emails={emails} setEmails={setEmails}/>
-                <TextField id="to-textfield" label="To" variant="standard" />
-                <TextField
+                margin: "0 auto",
+                paddingLeft: "21px",
+                maxWidth: "calc(100% - 40px)", // Adjust the value as needed for margins
+                gap: 2, // Adjust the gap between elements as needed
+              }}
+            >
+              <MultiEmail emails={emails} setEmails={setEmails} />
+              <TextField
                 id="subject-textfield"
                 label="Subject"
                 variant="standard"
-                />
+                fullWidth
+              />
             </Box>
             <RichTextEditor
               ref={rteRef}
@@ -338,7 +340,7 @@ export default function PaperContent() {
               Save and display HTML
             </Button>
           </Box>
-        </div>
+        {/* </div> */}
       </Box>
     </>
   );

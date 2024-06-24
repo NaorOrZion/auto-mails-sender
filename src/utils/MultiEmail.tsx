@@ -31,23 +31,16 @@ const MultipleEmailsInput = ({
 
   return (
     <>
-      <Stack id="emails-input-stack" direction="row" justifyContent="center">
-        <IconButton color="primary" onClick={handleAddEmail}>
-          <AddCircleIcon />
-        </IconButton>
-        <TextField
-          id="emails-input"
-          label="To"
-          variant="standard"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-        />
-      </Stack>
       <Stack
         direction="row"
         spacing={1}
-        sx={{ marginTop: 2, marginLeft: 2, flexWrap: "wrap", overflowY: "auto", maxHeight: 100}}
+        sx={{
+          marginTop: 2,
+          marginLeft: 2,
+          flexWrap: "wrap",
+          overflowY: "auto",
+          maxHeight: 100,
+        }}
       >
         {emails.map((email, index) => (
           <Chip
@@ -58,6 +51,29 @@ const MultipleEmailsInput = ({
             sx={{}}
           />
         ))}
+      </Stack>
+      <Stack
+        id="emails-input-stack"
+        direction="row"
+        justifyContent="center"
+        sx={{ width: "100%" }}
+      >
+        <IconButton
+          color="primary"
+          onClick={handleAddEmail}
+          sx={{ marginRight: "auto" }}
+        >
+          <AddCircleIcon />
+        </IconButton>
+        <TextField
+          id="emails-input"
+          label="To"
+          variant="standard"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+          sx={{ flexGrow: 1 }}
+        />
       </Stack>
     </>
   );
