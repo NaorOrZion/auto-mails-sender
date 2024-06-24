@@ -174,6 +174,7 @@ export default function PaperContent() {
               ref={rteRef}
               content={exampleContent}
               extensions={extensions}
+              className="rich-text-editor"
               renderControls={() => (
                 <MenuControlsContainer>
                   <MenuSelectHeading />
@@ -210,9 +211,6 @@ export default function PaperContent() {
 
                   <MenuButtonAddTable />
 
-                  <MenuDivider />
-
-                  <MenuButtonRemoveFormatting />
                 </MenuControlsContainer>
               )}
             >
