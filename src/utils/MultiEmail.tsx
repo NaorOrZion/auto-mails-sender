@@ -20,8 +20,16 @@ const MultipleEmailsInput = ({
 
   const handleAddEmail = () => {
     if (email && !emails.includes(email)) {
-      setEmails([...emails, email]);
-      setEmail("");
+      if (
+        email
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          )
+      ) {
+        setEmails([...emails, email]);
+        setEmail("");
+      }
     }
   };
 
@@ -70,7 +78,14 @@ const MultipleEmailsInput = ({
           label="To"
           variant="standard"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            const value: string = e.target.value;
+            setEmail(value.trim());
+            if (value.endsWith(" ") || value.endsWith(";")) {
+              handleAddEmail(); // Trim the email before adding
+              setEmail(""); // Clear the input field
+            }
+          }}
           fullWidth
           sx={{ flexGrow: 1 }}
         />
