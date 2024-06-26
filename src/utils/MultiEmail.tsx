@@ -21,7 +21,9 @@ const MultipleEmailsInput = ({
 
     // Add the email to the emails array if it is a valid email
     const handleAddEmail = () => {
+        // This condition checks if the email is not empty and if it is not already in the emails array
         if (email && !emails.includes(email)) {
+            // This condition checks if the email is a valid email
             if (
                 email
                     .toLowerCase()
@@ -29,6 +31,7 @@ const MultipleEmailsInput = ({
                         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     )
             ) {
+                // Add the email to the emails array and clear the input field
                 setEmails([...emails, email]);
                 setEmail("");
             }
@@ -44,9 +47,16 @@ const MultipleEmailsInput = ({
         all: object[];
         invalidData: object[];
         validData: object[];
-    }) {
+        }) {
+        // Handle the submit event from the ReactSpreadsheetImport component
+        // Add the valid emails to the emails array
+        // The data object contains the following
+        // all: an array of all the rows in the spreadsheet
+        // invalidData: an array of the rows that are invalid
+        // validData: an array of the rows that are valid
         const validRows = data.validData;
 
+        // Add the valid emails to the emails array
         setEmails([...emails, ...validRows.map((row: any) => row.email)]);
     }
 

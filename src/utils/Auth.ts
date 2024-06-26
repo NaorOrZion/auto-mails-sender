@@ -1,7 +1,7 @@
 // auth.ts
 import { jwtDecode } from 'jwt-decode';
 
-const CLIENT_ID = '332259366157-1r3pt7kjt24jcjs7ojbrjbmh69gkpd7a.apps.googleusercontent.com';
+const CLIENT_ID = '721700191832-1si8gdbp4f7pkmsugs85r2v8t4umd2hv.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/gmail.send';
 const REDIRECT_URI = window.location.origin;
 
@@ -20,7 +20,13 @@ export function getTokenFromUrl() {
 }
 
 export function isTokenValid(token: string) {
-  const decoded = jwtDecode<DecodedToken>(token);
-  const now = Math.floor(Date.now() / 1000);
-  return decoded.exp > now;
+  // Check if token is valid
+  try {
+    const decoded = jwtDecode<DecodedToken>(token);
+    const now = Math.floor(Date.now() / 1000);
+    return decoded.exp > now;
+  } catch (error) {
+    console.error("Invalid token:", error);
+    return false;
+  }
 }
