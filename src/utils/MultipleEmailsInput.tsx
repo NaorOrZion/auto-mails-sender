@@ -255,6 +255,7 @@ const MultipleEmailsInput = ({
                     }}
                     fullWidth
                     sx={{ flexGrow: 1, direction: "ltr" }}
+                    required
                 />
             </Stack>
         </>
