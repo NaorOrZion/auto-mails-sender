@@ -9,8 +9,8 @@ import { gapi } from "gapi-script";
 import UpperBar from "./UpperBar";
 
 const CLIENT_ID =
-    "";
-const API_KEY = "";
+    "721700191832-1si8gdbp4f7pkmsugs85r2v8t4umd2hv.apps.googleusercontent.com";
+const API_KEY = "AIzaSyBhkMoLMMRTh35Pk7SL_vx0Rz3286vkXU0";
 const SCOPES = "https://www.googleapis.com/auth/gmail.send";
 
 export default function PaperContent() {
@@ -64,12 +64,12 @@ export default function PaperContent() {
     return (
         <>
             <Box sx={{ flexGrow: 3 }}>
-                <form
+                {/* <form
                     onSubmit={(event) => {
                         event.preventDefault();
                         handleSendEmailClick();
                     }}
-                >
+                > */}
                     <UpperBar />
                     <Box
                         component="form"
@@ -112,9 +112,9 @@ export default function PaperContent() {
 
                         <Divider sx={{ mt: 5, mb: 2 }} />
 
-                        <Button type="submit">Save and display HTML</Button>
+                        <Button type="submit" onClick={handleSendEmailClick}>Save and display HTML</Button>
                     </Box>
-                </form>
+                {/* </form> */}
             </Box>
         </>
     );

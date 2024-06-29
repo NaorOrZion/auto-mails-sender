@@ -67,7 +67,7 @@ const MultipleEmailsInput = ({
             // This is the key used for this field when we call onSubmit.
             key: "fullName",
             // Allows for better automatic column matching. Optional.
-            alternateMatches: ["שם", "שמות", "שמות מלאים", "שם חניך"],
+            alternateMatches: ["שם", "שמות", "שמות מלאים", "שם חניך", "שם מלא"],
             // Used when editing and validating information.
             fieldType: {
                 // There are 3 types - "input" / "checkbox" / "select".
@@ -200,8 +200,8 @@ const MultipleEmailsInput = ({
                         // The addError parameter is a function that you can use to add an error to the row.
                         // If you add an error, the row will be marked as invalid and the user will not be able to proceed to the next step.
                         // Validation
-                        const dataEmail = data.email.toString() ?? "";
-                        const dataName = data.fullName.toString() ?? "";
+                        const dataEmail = data.email?.toString() ?? "";
+                        const dataName = data.fullName?.toString() ?? "";
 
                         if (!dataEmail || !dataName) {
                             addError("name", {

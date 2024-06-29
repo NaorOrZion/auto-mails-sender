@@ -27,7 +27,7 @@ function App() {
                     >
                         <div id="content" style={{ height: "100%" , display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
                             {/* Page Heading */}
-                            {/* <Info /> */}
+                            <Info />
                             {/* Begin Page Content */}
                             <div className="container-fluid row d-flex flex-column">
                                 <div className="col-lg-12 d-flex flex-column mt-auto">
