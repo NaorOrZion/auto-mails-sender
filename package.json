@@ -1,6 +1,7 @@
 {
   "name": "auto-mails-sender",
   "private": true,
+  "proxy": "http://localhost:5000",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -49,6 +50,7 @@
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
+    "axios": "^1.7.2",
     "buffer": "^6.0.3",
     "fs-extra": "^11.2.0",
     "gapi-script": "^1.2.0",

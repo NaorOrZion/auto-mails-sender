@@ -1,16 +1,8 @@
 import { gapi } from 'gapi-script';
 import { encode } from 'js-base64';
 
-// Function to encode non-ASCII email subjects according to RFC 2047
-function encodeEmailSubject(subject: string): string {
-  // Encode the subject in base64 to handle non-ASCII characters
-  const base64Subject = encode(subject);
-  // Return the encoded subject in the format =?charset?encoding?encoded text?=
-  return `=?utf-8?B?${base64Subject}?=`;
-}
-
 export default function sendEmail(email: string, subject: string, body: string) {
-  const encodedSubject = encodeEmailSubject(subject);
+  const encodedSubject = encode(subject);
 
   const encodedMessage = encode(
     `Content-Type: text/html; charset="UTF-8"\n` +
