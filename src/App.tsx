@@ -34,7 +34,13 @@ function App() {
                                     <Paper
                                         elevation={7}
                                         sx={{
-                                            height: "80vh",
+                                            width: "100%",
+                                            height: "100%",
+                                            p: 2,
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            justifyContent: "center",
                                         }}
                                     >
                                         <PaperContent />

@@ -75,10 +75,11 @@ export default function PaperContent() {
                     sx={{
                         "& > :not(style)": {
                             m: 1,
-                            width: "95%",
+                            width: "100%",
                             direction: "rtl",
                             textAlign: "right",
-                            marginRight: "50px",
+                            // marginRight: "50px",
+
                         },
                     }}
                     noValidate
