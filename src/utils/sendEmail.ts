@@ -1,34 +1,56 @@
-import { gapi } from 'gapi-script';
-import { encode } from 'js-base64';
+import { encode } from "js-base64";
 
-// Function to encode non-ASCII email subjects according to RFC 2047
-function encodeEmailSubject(subject: string): string {
-  // Encode the subject in base64 to handle non-ASCII characters
-  const base64Subject = encode(subject);
-  // Return the encoded subject in the format =?charset?encoding?encoded text?=
-  return `=?utf-8?B?${base64Subject}?=`;
+/**
+ * This function sends an email using the Gmail API
+ *
+ * @param email | Email address to send the email to
+ * @param subject | Subject of the email
+ * @param body | Body of the email
+ * @param accessToken | Access token to authenticate the request
+ */
+export default function sendEmail(
+    email: string,
+    subject: string,
+    body: string,
+    accessToken: string
+) {
+    // Encode the subject in base64 to handle non-ASCII characters
+    const encodedSubject = `=?UTF-8?B?${encode(subject)}?=`;
+
+    // Encode the message body in base64
+    const encodedBody = encode(body);
+
+    // Create the raw email message
+    const rawMessage = [
+        `Content-Type: text/html; charset="UTF-8"`,
+        `MIME-Version: 1.0`,
+        `Content-Transfer-Encoding: base64`,
+        `to: ${email}`,
+        `subject: ${encodedSubject}`,
+        `\n${encodedBody}`,
+    ].join("\n");
+
+    const encodedMessage = encode(rawMessage)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+
+    // Send the email using the access token
+    fetch("https://www.googleapis.com/gmail/v1/users/me/messages/send", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            raw: encodedMessage,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Email sent", data);
+        })
+        .catch((error) => {
+            console.error("Error sending email", error);
+        });
 }
-
-export default function sendEmail(email: string, subject: string, body: string) {
-  const encodedSubject = encodeEmailSubject(subject);
-
-  const encodedMessage = encode(
-    `Content-Type: text/html; charset="UTF-8"\n` +
-    `MIME-Version: 1.0\n` +
-    `Content-Transfer-Encoding: 7bit\n` +
-    `to: ${email}\n` +
-    `subject: ${encodedSubject}\n\n` +
-    `${body}`
-  ).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-
-  gapi.client.gmail.users.messages.send({
-    userId: 'me',
-    resource: {
-      raw: encodedMessage
-    }
-  }).then((response: any) => {
-    console.log('Email sent', response);
-  }).catch((error: any) => {
-    console.error('Error sending email', error);
-  });
-};
