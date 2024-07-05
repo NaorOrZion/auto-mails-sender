@@ -61,3 +61,37 @@
   text-align: left !important;
   direction: ltr !important;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@media print {
+	body {
+		margin: 0 !important;
+	}
+}
+
+.main-container {
+	font-family: 'Rubik', sans-serif;
+	width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.ck-content {
+	font-family: 'Lato';
+	line-height: 1.6;
+	word-break: break-word;
+}
+
+.editor-container_classic-editor .editor-container__editor {
+	/* margin: 2vh auto !important; */
+  margin-bottom: 0;
+  max-width: 97%;
+  max-height: 40vh;
+  overflow-y: scroll;
+}
+
+.ck-powered-by-balloon {
+  display: none !important;
+}
+

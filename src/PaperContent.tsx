@@ -111,7 +111,7 @@ export default function PaperContent() {
                             required
                         />
                     </Box>
-                    <RichTextEditorComponent rteRef={rteRef} />
+                    <RichTextEditorComponent/>
 
                     <Divider sx={{ mt: 5, mb: 2 }} />
 
