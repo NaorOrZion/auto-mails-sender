@@ -35,7 +35,6 @@ import {
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
-	SelectAll,
 	ShowBlocks,
 	SimpleUploadAdapter,
 	SourceEditing,
@@ -72,7 +71,6 @@ export default function RichTextEditorComponent() {
 				'|',
 				'sourceEditing',
 				'showBlocks',
-				'selectAll',
 				'|',
 				'heading',
 				'|',
@@ -129,7 +127,6 @@ export default function RichTextEditorComponent() {
 			MediaEmbed,
 			Paragraph,
 			PasteFromOffice,
-			SelectAll,
 			ShowBlocks,
 			SimpleUploadAdapter,
 			SourceEditing,
@@ -232,7 +229,7 @@ export default function RichTextEditorComponent() {
 				reversed: true
 			}
 		},
-		placeholder: 'Type or paste your content here!',
+		placeholder: 'יאללה מדור ליבה תתחילו לכתוב כאן...',
 		table: {
 			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
 		},

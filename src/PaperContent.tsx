@@ -68,28 +68,25 @@ export default function PaperContent() {
 
     return (
         <>
-            <Box sx={{ flexGrow: 3 }}>
-                <UpperBar />
-                <Box
-                    component="form"
-                    sx={{
-                        "& > :not(style)": {
-                            m: 1,
-                            width: "100%",
-                            direction: "rtl",
-                            textAlign: "right",
-                            // marginRight: "50px",
-
-                        },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                    onSubmit={(event) => {
-                        event.preventDefault();
-                        handleSendEmailClick();
-                    }}
-                >
-                    <Box
+            <UpperBar />
+            <Box
+                component="form"
+                sx={{
+                    // "& > :not(style)": {
+                    width: "100%",
+                    direction: "rtl",
+                    textAlign: "right",
+                    paddingRight: "1.8vw",
+                    paddingLeft: "1.8vw",
+                    // },
+                }}
+                autoComplete="off"
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    handleSendEmailClick();
+                }}
+            >
+                {/* <Box
                         sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -100,24 +97,26 @@ export default function PaperContent() {
                             maxWidth: "calc(100% - 40px)", // Adjust the value as needed for margins
                             gap: 2, // Adjust the gap between elements as needed
                         }}
-                    >
-                        <MultiEmail emails={emails} setEmails={setEmails} />
-                        <TextField
-                            id="subject-textfield"
-                            label="Subject"
-                            variant="standard"
-                            onChange={(e) => setSubject(e.target.value)}
-                            inputProps={{ maxLength: 250 }}
-                            fullWidth
-                            required
-                        />
-                    </Box>
-                    <RichTextEditorComponent/>
+                    > */}
+                <MultiEmail
+                    emails={emails}
+                    setEmails={setEmails}
+                />
+                <TextField
+                    className="mt-2 mb-3"
+                    id="subject-textfield"
+                    label="Subject"
+                    variant="standard"
+                    onChange={(e) => setSubject(e.target.value)}
+                    fullWidth
+                    required
+                />
+                {/* </Box> */}
+                <RichTextEditorComponent />
 
-                    <Divider sx={{ mt: 5, mb: 2 }} />
+                <Divider sx={{ mt: 5, mb: 2 }} />
 
-                    <Button type="submit">Save and display HTML</Button>
-                </Box>
+                <Button type="submit">Save and display HTML</Button>
             </Box>
         </>
     );
