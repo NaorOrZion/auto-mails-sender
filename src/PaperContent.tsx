@@ -51,14 +51,12 @@ export default function PaperContent() {
     }, []);
 
     const handleSendEmailClick = async () => {
-        const newHtmlResult = (await rteRef.current?.editor?.getHTML()) ?? "";
-        setHtmlResult(newHtmlResult);
 
         if (isSignedIn) {
-            await sendEmail(
+            sendEmail(
                 emails.join(","),
                 subject,
-                newHtmlResult,
+                htmlResult,
                 accessToken
             );
         } else {
@@ -72,13 +70,11 @@ export default function PaperContent() {
             <Box
                 component="form"
                 sx={{
-                    // "& > :not(style)": {
                     width: "100%",
                     direction: "rtl",
                     textAlign: "right",
                     paddingRight: "1.8vw",
                     paddingLeft: "1.8vw",
-                    // },
                 }}
                 autoComplete="off"
                 onSubmit={(event) => {
@@ -86,18 +82,6 @@ export default function PaperContent() {
                     handleSendEmailClick();
                 }}
             >
-                {/* <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "0 auto",
-                            paddingLeft: "1.8vw",
-                            maxWidth: "calc(100% - 40px)", // Adjust the value as needed for margins
-                            gap: 2, // Adjust the gap between elements as needed
-                        }}
-                    > */}
                 <MultiEmail
                     emails={emails}
                     setEmails={setEmails}
@@ -111,8 +95,7 @@ export default function PaperContent() {
                     fullWidth
                     required
                 />
-                {/* </Box> */}
-                <RichTextEditorComponent />
+                <RichTextEditorComponent setHtmlResult={setHtmlResult} />
 
                 <Divider sx={{ mt: 5, mb: 2 }} />
 

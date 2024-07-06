@@ -9,7 +9,6 @@ import {
 	AutoImage,
 	AutoLink,
 	Autosave,
-	Base64UploadAdapter,
 	Bold,
 	Code,
 	CodeBlock,
@@ -37,6 +36,7 @@ import {
 	Paragraph,
 	PasteFromOffice,
 	ShowBlocks,
+	SimpleUploadAdapter,
 	SourceEditing,
 	Table,
 	TableCaption,
@@ -52,7 +52,7 @@ import translations from 'ckeditor5/translations/he.js';
 
 import 'ckeditor5/ckeditor5.css';
 
-export default function RichTextEditorComponent() {
+export default function RichTextEditorComponent({setHtmlResult} : any) {
 	const editorContainerRef = useRef(null);
 	const editorRef = useRef(null);
 	const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -62,6 +62,11 @@ export default function RichTextEditorComponent() {
 
 		return () => setIsLayoutReady(false);
 	}, []);
+
+	const handleChange = async (event: any, editor: any) => {
+		const data = editor.getData();
+		await setHtmlResult(data);
+	}
 
 	const editorConfig = {
 		toolbar: {
@@ -102,7 +107,6 @@ export default function RichTextEditorComponent() {
 			AutoLink,
 			Autosave,
 			Bold,
-			Base64UploadAdapter,
 			Code,
 			CodeBlock,
 			Essentials,
@@ -129,6 +133,7 @@ export default function RichTextEditorComponent() {
 			Paragraph,
 			PasteFromOffice,
 			ShowBlocks,
+			SimpleUploadAdapter,
 			SourceEditing,
 			Table,
 			TableCaption,
@@ -239,7 +244,7 @@ export default function RichTextEditorComponent() {
 			<div className="main-container">
 				<div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
 					<div className="editor-container__editor">
-						<div ref={editorRef}>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
+						<div ref={editorRef}>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig} onChange={handleChange}/>}</div>
 					</div>
 				</div>
 			</div>
