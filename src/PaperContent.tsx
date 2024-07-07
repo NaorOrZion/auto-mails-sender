@@ -1,25 +1,20 @@
 import RichTextEditorComponent from "./utils/RichTextEditorComponent";
 import { Box, Button, Divider } from "@mui/material";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
-import { RichTextEditorRef } from "mui-tiptap";
 import MultiEmail from "./utils/MultipleEmailsInput";
 import sendEmail from "./utils/sendEmail";
-import { gapi } from "gapi-script";
 import UpperBar from "./UpperBar";
 
 // Declare the google namespace
 declare const google: any;
 
-const CLIENT_ID =
-    "721700191832-1si8gdbp4f7pkmsugs85r2v8t4umd2hv.apps.googleusercontent.com";
-const API_KEY = "AIzaSyBhkMoLMMRTh35Pk7SL_vx0Rz3286vkXU0";
+const CLIENT_ID = "1049876237359-rvju9lfpr5c3egt7medntgh4lt3hpnmp.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/gmail.send";
 
 export default function PaperContent() {
     // This comopnent stores all the components in the paper
 
-    const rteRef = useRef<RichTextEditorRef>(null);
     const [htmlResult, setHtmlResult] = useState<string>("");
     const [emails, setEmails] = useState<string[]>([]);
     const [subject, setSubject] = useState<string>("");
