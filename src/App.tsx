@@ -19,27 +19,43 @@ function App() {
     return (
         <>
             <ThemeProvider theme={theme}>
-                <div id="wrapper" className="d-flex"  style={{ height: "100vh" }}>
+                <div
+                    id="wrapper"
+                    className="d-flex"
+                    style={{ height: "100vh" }}
+                >
                     <div
                         id="content-wrapper"
                         className="flex-grow-1 d-flex flex-column"
-                         style={{ height: "100%" }}
+                        style={{ height: "100%" }}
                     >
-                        <div id="content" style={{ height: "100%" , display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
+                        <div
+                            id="content"
+                            style={{
+                                height: "100%",
+                                display: "flex",
+                                flexWrap: "wrap",
+                                justifyContent: "center",
+                            }}
+                        >
                             {/* Page Heading */}
                             {/* <Info /> */}
                             {/* Begin Page Content */}
                             <div className="container-fluid row d-flex flex-column">
-                                <div className="col-lg-12 d-flex flex-column mt-auto">
-                                    <Paper
-                                        elevation={7}
-                                        sx={{
-                                            height: "80vh",
-                                        }}
-                                    >
-                                        <PaperContent />
-                                    </Paper>
-                                </div>
+                                <Paper
+                                    elevation={7}
+                                    sx={{
+                                        width: "100%",
+                                        height: "100%",
+                                        p: 0,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        justifyContent: "start",
+                                    }}
+                                >
+                                    <PaperContent />
+                                </Paper>
                             </div>
                         </div>
                     </div>

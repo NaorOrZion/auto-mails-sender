@@ -1,192 +1,253 @@
+import { useState, useEffect, useRef } from 'react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+
 import {
-    LinkBubbleMenu,
-    MenuButtonAddTable,
-    MenuButtonBlockquote,
-    MenuButtonBold,
-    MenuButtonBulletedList,
-    MenuButtonCode,
-    MenuButtonCodeBlock,
-    MenuButtonEditLink,
-    MenuButtonItalic,
-    MenuButtonOrderedList,
-    MenuButtonStrikethrough,
-    MenuButtonSubscript,
-    MenuButtonSuperscript,
-    MenuButtonTaskList,
-    MenuControlsContainer,
-    MenuButtonAddImage,
-    MenuDivider,
-    MenuSelectHeading,
-    RichTextEditor,
-    insertImages,
-    TableBubbleMenu,
-    type RichTextEditorRef,
-} from "mui-tiptap";
-import React from "react";
-import { EditorOptions } from "@tiptap/core";
-import { extensions } from "./extensions";
+	ClassicEditor,
+	AccessibilityHelp,
+	Alignment,
+	Autoformat,
+	AutoImage,
+	AutoLink,
+	Autosave,
+	Bold,
+	Code,
+	CodeBlock,
+	Essentials,
+	GeneralHtmlSupport,
+	Heading,
+	HtmlComment,
+	HtmlEmbed,
+	ImageBlock,
+	ImageCaption,
+	ImageInline,
+	ImageInsert,
+	ImageInsertViaUrl,
+	ImageResize,
+	ImageStyle,
+	ImageTextAlternative,
+	ImageToolbar,
+	ImageUpload,
+	Italic,
+	Link,
+	LinkImage,
+	List,
+	ListProperties,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	ShowBlocks,
+	SimpleUploadAdapter,
+	SourceEditing,
+	Table,
+	TableCaption,
+	TableCellProperties,
+	TableColumnResize,
+	TableProperties,
+	TableToolbar,
+	TextTransformation,
+	Undo
+} from 'ckeditor5';
 
-export default function RichTextEditorComponent( { rteRef } : { rteRef: React.RefObject<RichTextEditorRef>}) {
-    // This component is the Rich Text Editor that will be used in the paper
-    // It uses the mui-tiptap library
-    // The editor has a lot of features, including the ability to add images
-    // and tables, and to format text in various ways
-    const exampleContent = "<p>מה תרצו לכתוב היום?</p>";
+import translations from 'ckeditor5/translations/he.js';
 
-    // This function will convert a FileList to an array of File objects
-    function fileListToImageFiles(fileList: FileList): File[] {
-        return Array.from(fileList).filter((file) => {
-            const mimeType = (file.type || "").toLowerCase();
-            return mimeType.startsWith("image/");
-        });
-    }
+import 'ckeditor5/ckeditor5.css';
 
-    // This function will handle the new image files
-    const handleNewImageFiles = React.useCallback(
-        (files: File[], insertPosition?: number): void => {
-            if (!rteRef.current?.editor) {
-                return;
-            }
+export default function RichTextEditorComponent({setHtmlResult} : any) {
+	const editorContainerRef = useRef(null);
+	const editorRef = useRef(null);
+	const [isLayoutReady, setIsLayoutReady] = useState(false);
 
-            // Convert the image files to attributes that can be used to insert
-            const attributesForImageFiles = files.map((file) => ({
-                src: URL.createObjectURL(file),
-                alt: file.name,
-            }));
+	useEffect(() => {
+		setIsLayoutReady(true);
 
-            // Insert the images into the editor
-            insertImages({
-                images: attributesForImageFiles,
-                editor: rteRef.current.editor,
-                position: insertPosition,
-            });
-        },
-        []
-    );
+		return () => setIsLayoutReady(false);
+	}, []);
 
-    // This function will handle the drop event of any image
-    const handleDrop: NonNullable<EditorOptions["editorProps"]["handleDrop"]> =
-        React.useCallback(
-            (view, event, _slice, _moved) => {
-                if (!(event instanceof DragEvent) || !event.dataTransfer) {
-                    return false;
-                }
+	const handleChange = async (event: any, editor: any) => {
+		const data = editor.getData();
+		await setHtmlResult(data);
+	}
 
-                const imageFiles = fileListToImageFiles(
-                    event.dataTransfer.files
-                );
-                if (imageFiles.length > 0) {
-                    const insertPosition = view.posAtCoords({
-                        left: event.clientX,
-                        top: event.clientY,
-                    })?.pos;
+	const editorConfig = {
+		toolbar: {
+			items: [
+				'undo',
+				'redo',
+				'|',
+				'sourceEditing',
+				'showBlocks',
+				'|',
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'code',
+				'|',
+				'link',
+				'insertImage',
+				'mediaEmbed',
+				'insertTable',
+				'codeBlock',
+				'htmlEmbed',
+				'|',
+				'alignment',
+				'|',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'accessibilityHelp'
+			],
+			shouldNotGroupWhenFull: false
+		},
+		plugins: [
+			AccessibilityHelp,
+			Alignment,
+			Autoformat,
+			AutoImage,
+			AutoLink,
+			Autosave,
+			Bold,
+			Code,
+			CodeBlock,
+			Essentials,
+			GeneralHtmlSupport,
+			Heading,
+			HtmlComment,
+			HtmlEmbed,
+			ImageBlock,
+			ImageCaption,
+			ImageInline,
+			ImageInsert,
+			ImageInsertViaUrl,
+			ImageResize,
+			ImageStyle,
+			ImageTextAlternative,
+			ImageToolbar,
+			ImageUpload,
+			Italic,
+			Link,
+			LinkImage,
+			List,
+			ListProperties,
+			MediaEmbed,
+			Paragraph,
+			PasteFromOffice,
+			ShowBlocks,
+			SimpleUploadAdapter,
+			SourceEditing,
+			Table,
+			TableCaption,
+			TableCellProperties,
+			TableColumnResize,
+			TableProperties,
+			TableToolbar,
+			TextTransformation,
+			Undo
+		],
+		heading: {
+			options: [
+				{
+					model: 'paragraph',
+					title: 'Paragraph',
+					class: 'ck-heading_paragraph'
+				},
+				{
+					model: 'heading1',
+					view: 'h1',
+					title: 'Heading 1',
+					class: 'ck-heading_heading1'
+				},
+				{
+					model: 'heading2',
+					view: 'h2',
+					title: 'Heading 2',
+					class: 'ck-heading_heading2'
+				},
+				{
+					model: 'heading3',
+					view: 'h3',
+					title: 'Heading 3',
+					class: 'ck-heading_heading3'
+				},
+				{
+					model: 'heading4',
+					view: 'h4',
+					title: 'Heading 4',
+					class: 'ck-heading_heading4'
+				},
+				{
+					model: 'heading5',
+					view: 'h5',
+					title: 'Heading 5',
+					class: 'ck-heading_heading5'
+				},
+				{
+					model: 'heading6',
+					view: 'h6',
+					title: 'Heading 6',
+					class: 'ck-heading_heading6'
+				}
+			]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
+		},
+		image: {
+			toolbar: [
+				'toggleImageCaption',
+				'imageTextAlternative',
+				'|',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'resizeImage'
+			]
+		},
+		language: 'he',
+		link: {
+			addTargetToExternalLinks: true,
+			defaultProtocol: 'https://',
+			decorators: {
+				toggleDownloadable: {
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'file'
+					}
+				}
+			}
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		},
+		placeholder: 'מה בראש שלכם היום?',
+		table: {
+			contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
+		},
+		translations: [translations]
+	};
 
-                    handleNewImageFiles(imageFiles, insertPosition);
-                    event.preventDefault();
-                    return true;
-                }
-
-                return false;
-            },
-            [handleNewImageFiles]
-        );
-
-    const handlePaste: NonNullable<
-        EditorOptions["editorProps"]["handlePaste"]
-    > = React.useCallback(
-        (_view, event, _slice) => {
-            if (!event.clipboardData) {
-                return false;
-            }
-
-            const pastedImageFiles = fileListToImageFiles(
-                event.clipboardData.files
-            );
-            if (pastedImageFiles.length > 0) {
-                handleNewImageFiles(pastedImageFiles);
-                return true;
-            }
-
-            return false;
-        },
-        [handleNewImageFiles]
-    );
-
-    return (
-        <>
-            <RichTextEditor
-                ref={rteRef}
-                content={exampleContent}
-                extensions={extensions}
-                editorProps={{
-                    handleDrop: handleDrop,
-                    handlePaste: handlePaste,
-                }}
-                className="rich-text-editor"
-                renderControls={() => (
-                    <MenuControlsContainer>
-                        <MenuSelectHeading />
-
-                        <MenuDivider />
-
-                        <MenuButtonBold />
-                        <MenuButtonItalic />
-                        <MenuButtonStrikethrough />
-                        <MenuButtonSubscript />
-                        <MenuButtonSuperscript />
-
-                        <MenuDivider />
-
-                        <MenuButtonEditLink />
-
-                        <MenuDivider />
-
-                        <MenuButtonOrderedList />
-                        <MenuButtonBulletedList />
-                        <MenuButtonTaskList />
-
-                        <MenuDivider />
-
-                        <MenuButtonBlockquote />
-
-                        <MenuDivider />
-
-                        <MenuButtonCode />
-
-                        <MenuButtonCodeBlock />
-
-                        <MenuDivider />
-
-                        <MenuButtonAddTable />
-
-                        <MenuButtonAddImage
-                            onClick={() => {
-                                const fileInput =
-                                    document.createElement("input");
-                                fileInput.type = "file";
-                                fileInput.accept = "image/*";
-                                fileInput.multiple = true;
-                                fileInput.onchange = (event) => {
-                                    const files = (
-                                        event.target as HTMLInputElement
-                                    ).files;
-                                    if (files) {
-                                        handleNewImageFiles(Array.from(files));
-                                    }
-                                };
-                                fileInput.click();
-                            }}
-                        />
-                    </MenuControlsContainer>
-                )}
-            >
-                {() => (
-                    <>
-                        <LinkBubbleMenu />
-                        <TableBubbleMenu />
-                    </>
-                )}
-            </RichTextEditor>
-        </>
-    );
+	return (
+		<div>
+			<div className="main-container">
+				<div className="editor-container editor-container_classic-editor" ref={editorContainerRef}>
+					<div className="editor-container__editor">
+						<div ref={editorRef}>{isLayoutReady && <CKEditor editor={ClassicEditor} config={editorConfig} onChange={handleChange}/>}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 }

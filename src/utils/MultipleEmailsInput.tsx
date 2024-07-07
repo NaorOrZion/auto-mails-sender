@@ -133,6 +133,7 @@ const MultipleEmailsInput = ({
                     flexWrap: "wrap",
                     overflowY: "auto",
                     maxHeight: 100,
+                    width: "100%",
                 }}
             >
                 {emails.map((email, index) => (
@@ -141,7 +142,7 @@ const MultipleEmailsInput = ({
                         label={email}
                         onDelete={handleDeleteEmail(email)}
                         className="p-3 m-1 "
-                        sx={{ direction: "ltr" }}
+                        sx={{ direction: "rtl" }}
                     />
                 ))}
             </Stack>
@@ -245,6 +246,7 @@ const MultipleEmailsInput = ({
                     label="To"
                     variant="standard"
                     value={email}
+                    className="mt-2"
                     onChange={(e) => {
                         const value: string = e.target.value;
                         setEmail(value.trim());
@@ -254,8 +256,7 @@ const MultipleEmailsInput = ({
                         }
                     }}
                     fullWidth
-                    sx={{ flexGrow: 1, direction: "ltr" }}
-                    required
+                    // required
                 />
             </Stack>
         </>
