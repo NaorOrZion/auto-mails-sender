@@ -6,9 +6,18 @@ import TextField from "@mui/material/TextField";
 import UpperBar from "./UpperBar";
 import { useState, useEffect } from "react";
 
-export default function PaperContent(
-    { setOpenSuccessEmail }: { setOpenSuccessEmail: any },
-) {
+interface PaperContentProps {
+    setOpenSuccessEmail: React.Dispatch<React.SetStateAction<boolean>>;
+    setTextAlert: React.Dispatch<React.SetStateAction<string>>;
+    setStateAlert: React.Dispatch<React.SetStateAction<string>>;
+    // Add other states and their setter functions as needed
+}
+
+export default function PaperContent({
+    setOpenSuccessEmail,
+    setTextAlert,
+    setStateAlert,
+}: PaperContentProps) {
     // This comopnent stores all the components in the paper
 
     const [htmlResult, setHtmlResult] = useState<string>("");
@@ -24,6 +33,7 @@ export default function PaperContent(
     useEffect(() => {
         // Ensure all required states are not empty or in their initial states
         if (emails.length > 0 && subject && htmlResult) {
+            // Call the function to send the email
             GmailAuth({
                 emails,
                 subject,
@@ -33,20 +43,6 @@ export default function PaperContent(
                 setAccessToken,
                 setTokenClient,
             });
-        }
-
-        if (emails.length === 0) {
-            setTextAlert("למי לשלוח את ההודעה?");
-            setStateAlert("error");
-            setOpenSuccessEmail(true);
-        } else if (!subject) {
-            setTextAlert("ככה לשלוח בלי נושא?");
-            setStateAlert("error");
-            setOpenSuccessEmail(true);
-        } else if (!htmlResult) {
-            setTextAlert("למה לשלוח הודעה ריקה?");
-            setStateAlert("error");
-            setOpenSuccessEmail(true);
         }
     }, [emails, subject, htmlResult, setOpenSuccessEmail]); // Dependency array
 
@@ -73,6 +69,8 @@ export default function PaperContent(
                         isSignedIn,
                         accessToken,
                         tokenClient,
+                        setTextAlert,
+                        setStateAlert,
                     });
                 }}
             >
@@ -84,7 +82,6 @@ export default function PaperContent(
                     variant="standard"
                     onChange={(e) => setSubject(e.target.value)}
                     fullWidth
-                    required
                 />
                 <RichTextEditorComponent setHtmlResult={setHtmlResult} />
 

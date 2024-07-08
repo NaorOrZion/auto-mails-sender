@@ -19,10 +19,8 @@ function App() {
         },
     });
 
-    const [openSuccessEmail, setOpenSuccessEmail] =
-        React.useState<Boolean>(false);
-    const [textAlert, setTextAlert] =
-        React.useState<string>("המייל נשלח בהצלחה!");
+    const [openSuccessEmail, setOpenSuccessEmail] = React.useState<boolean>(false);
+    const [textAlert, setTextAlert] = React.useState<string>("המייל נשלח בהצלחה!");
     const [stateAlert, setStateAlert] = React.useState<string>("success");
 
     const handleClose = (event: React.SyntheticEvent | Event) => {

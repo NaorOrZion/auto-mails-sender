@@ -258,7 +258,6 @@ const MultipleEmailsInput = ({
                         }
                     }}
                     fullWidth
-                    // required
                 />
             </Stack>
         </>

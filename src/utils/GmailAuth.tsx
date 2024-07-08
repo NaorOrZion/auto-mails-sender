@@ -111,15 +111,36 @@ export async function handleSendEmailClick({
     isSignedIn,
     accessToken,
     tokenClient,
+    setTextAlert,
+    setStateAlert,
 }: any) {
     if (isSignedIn) {
-        await sendEmail(
-            emails.join(","),
-            subject,
-            htmlResult,
-            accessToken,
-            setOpenSuccessEmail
-        );
+        // set the text alert to a success message
+        setTextAlert("המייל נשלח בהצלחה!");
+        setStateAlert("success");
+
+        // Call the function to send the email
+        if (emails.length === 0) {
+            setTextAlert("למי לשלוח את ההודעה?");
+            setStateAlert("error");
+            setOpenSuccessEmail(true);
+        } else if (!subject) {
+            setTextAlert("ככה לשלוח בלי נושא?");
+            setStateAlert("error");
+            setOpenSuccessEmail(true);
+        } else if (!htmlResult) {
+            setTextAlert("למה לשלוח הודעה ריקה?");
+            setStateAlert("error");
+            setOpenSuccessEmail(true);
+        } else {
+            await sendEmail(
+                emails.join(","),
+                subject,
+                htmlResult,
+                accessToken,
+                setOpenSuccessEmail
+            );
+        }
     } else {
         // Set a flag to auto-send the email after signing in
         localStorage.setItem("autoSendEmail", "true");
