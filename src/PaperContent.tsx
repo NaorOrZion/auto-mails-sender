@@ -6,11 +6,9 @@ import TextField from "@mui/material/TextField";
 import UpperBar from "./UpperBar";
 import { useState, useEffect } from "react";
 
-export default function PaperContent({
-    setOpenSuccessEmail,
-}: {
-    setOpenSuccessEmail: any;
-}) {
+export default function PaperContent(
+    { setOpenSuccessEmail }: { setOpenSuccessEmail: any },
+) {
     // This comopnent stores all the components in the paper
 
     const [htmlResult, setHtmlResult] = useState<string>("");
@@ -35,6 +33,20 @@ export default function PaperContent({
                 setAccessToken,
                 setTokenClient,
             });
+        }
+
+        if (emails.length === 0) {
+            setTextAlert("למי לשלוח את ההודעה?");
+            setStateAlert("error");
+            setOpenSuccessEmail(true);
+        } else if (!subject) {
+            setTextAlert("ככה לשלוח בלי נושא?");
+            setStateAlert("error");
+            setOpenSuccessEmail(true);
+        } else if (!htmlResult) {
+            setTextAlert("למה לשלוח הודעה ריקה?");
+            setStateAlert("error");
+            setOpenSuccessEmail(true);
         }
     }, [emails, subject, htmlResult, setOpenSuccessEmail]); // Dependency array
 

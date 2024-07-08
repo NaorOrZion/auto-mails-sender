@@ -19,7 +19,11 @@ function App() {
         },
     });
 
-    const [openSuccessEmail, setOpenSuccessEmail] = React.useState(false);
+    const [openSuccessEmail, setOpenSuccessEmail] =
+        React.useState<Boolean>(false);
+    const [textAlert, setTextAlert] =
+        React.useState<string>("המייל נשלח בהצלחה!");
+    const [stateAlert, setStateAlert] = React.useState<string>("success");
 
     const handleClose = (event: React.SyntheticEvent | Event) => {
         setOpenSuccessEmail(false);
@@ -63,7 +67,13 @@ function App() {
                                         justifyContent: "start",
                                     }}
                                 >
-                                    <PaperContent setOpenSuccessEmail={setOpenSuccessEmail} />
+                                    <PaperContent
+                                        setOpenSuccessEmail={
+                                            setOpenSuccessEmail
+                                        }
+                                        setTextAlert={setTextAlert}
+                                        setStateAlert={setStateAlert}
+                                    />
                                 </Paper>
                             </div>
                         </div>
@@ -74,11 +84,18 @@ function App() {
                             sx={{ direction: "rtl" }}
                         >
                             <Alert
-                                severity="success"
+                                severity={
+                                    stateAlert as
+                                        | "success"
+                                        | "error"
+                                        | "info"
+                                        | "warning"
+                                        | undefined
+                                }
                                 variant="filled"
-                                sx={{ width: "100%", direction: "rtl"}}
+                                sx={{ width: "100%", direction: "rtl" }}
                             >
-                                {"המייל נשלח בהצלחה!"}
+                                {textAlert}
                             </Alert>
                         </Snackbar>
                     </div>
