@@ -1,59 +1,128 @@
-// src/components/GmailAuth.js
-import { useEffect } from "react";
-import { gapi } from "gapi-script";
+import { useState, useEffect } from "react";
+import sendEmail from "./sendEmail";
+
+// Declare the google namespace
+declare const google: any;
 
 const CLIENT_ID =
     "1049876237359-rvju9lfpr5c3egt7medntgh4lt3hpnmp.apps.googleusercontent.com";
-const API_KEY = "AIzaSyAB9Ml2aaGyAh4cDxM7CipZoxQNq0NR1iI";
 const SCOPES = "https://www.googleapis.com/auth/gmail.send";
 
-const GmailAuth = () => {
-    useEffect(() => {
-        const initClient = () => {
-            gapi.client
-                .init({
-                    apiKey: API_KEY,
-                    clientId: CLIENT_ID,
-                    discoveryDocs: [
-                        "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
-                    ],
-                    scope: SCOPES,
-                })
-                .then(() => {
-                    gapi.auth2
-                        .getAuthInstance()
-                        .isSignedIn.listen(updateSigninStatus);
-                    updateSigninStatus(
-                        gapi.auth2.getAuthInstance().isSignedIn.get()
+/**
+ * This component handles the Gmail authentication process
+ * and saves the access token in local storage.
+ * It also sends an email if the user is signed in and
+ * a flag is set to auto-send an email.
+ *
+ * @params emails | Array of email addresses to send the email to
+ * @params subject | String subject of the email
+ * @params htmlResult | string HTML body of the email
+ * @params setOpenSuccessEmail | Boolean state to open the success email dialog
+ */
+export default function GmailAuth({
+    emails,
+    subject,
+    htmlResult,
+    setOpenSuccessEmail,
+    setIsSignedIn,
+    setAccessToken,
+    setTokenClient,
+}: any) {
+    const initClient = () => {
+        const tokenClient = google.accounts.oauth2.initTokenClient({
+            client_id: CLIENT_ID,
+            scope: SCOPES,
+            callback: async (response: any) => {
+                if (response.access_token) {
+                    // Save the access token in local storage
+                    localStorage.setItem("accessToken", response.access_token);
+                    // Calculate and save the expiration time
+                    // Assuming response.expires_in is the duration in seconds from now when the token expires
+                    const expirationTime =
+                        new Date().getTime() + response.expires_in * 1000;
+                    localStorage.setItem(
+                        "expirationTime",
+                        expirationTime.toString()
                     );
-                });
-        };
 
-        gapi.load("client:auth2", initClient);
-    }, []);
+                    setAccessToken(response.access_token);
+                    setIsSignedIn(true);
 
-    const updateSigninStatus = (isSignedIn: Boolean) => {
-        if (isSignedIn) {
-            console.log("User is signed in");
+                    console.log(
+                        "Signed in successfully, sending an email. Emails:",
+                        emails
+                    );
+                    // Check if we need to send an email immediately after signing in
+                    if (localStorage.getItem("autoSendEmail") === "true") {
+                        const requestResponse = await sendEmail(
+                            emails.join(","),
+                            subject,
+                            htmlResult,
+                            response.access_token, // Use the fresh token
+                            setOpenSuccessEmail
+                        );
+                        console.log("The Request response", requestResponse);
+                        localStorage.removeItem("autoSendEmail"); // Clear the flag after sending
+                    }
+                }
+            },
+        });
+        setTokenClient(tokenClient);
+    };
+
+    // Attempt to use the cached access token
+    const cachedToken = localStorage.getItem("accessToken");
+    const expirationTime = localStorage.getItem("expirationTime");
+    const currentTime = new Date().getTime();
+
+    if (
+        cachedToken &&
+        expirationTime &&
+        currentTime < parseInt(expirationTime)
+    ) {
+        // Token is valid
+        setAccessToken(cachedToken);
+        setIsSignedIn(true);
+    } else {
+        // Token is expired or not set, initiate sign-in process
+        localStorage.removeItem("accessToken"); // Ensure stale token is removed
+        localStorage.removeItem("expirationTime");
+        if (typeof google !== "undefined") {
+            initClient();
         } else {
-            console.log("User is not signed in");
+            console.error("You need to sign in to your Google account first.");
         }
-    };
+    }
+}
 
-    const handleAuthClick = () => {
-        gapi.auth2.getAuthInstance().signIn();
-    };
-
-    const handleSignOutClick = () => {
-        gapi.auth2.getAuthInstance().signOut();
-    };
-
-    return (
-        <div>
-            <button onClick={handleAuthClick}>Sign In with Google</button>
-            <button onClick={handleSignOutClick}>Sign Out</button>
-        </div>
-    );
-};
-
-export default GmailAuth;
+/**
+ * This function sends an email using the Gmail API.
+ *
+ * @params emails | Array of email addresses to send the email to
+ * @params subject | String subject of the email
+ * @params htmlResult | string HTML body of the email
+ * @params setOpenSuccessEmail | Boolean state to open the success email dialog
+ */
+export async function handleSendEmailClick({
+    emails,
+    subject,
+    htmlResult,
+    setOpenSuccessEmail,
+    isSignedIn,
+    accessToken,
+    tokenClient,
+}: any) {
+    if (isSignedIn) {
+        await sendEmail(
+            emails.join(","),
+            subject,
+            htmlResult,
+            accessToken,
+            setOpenSuccessEmail
+        );
+    } else {
+        // Set a flag to auto-send the email after signing in
+        localStorage.setItem("autoSendEmail", "true");
+        tokenClient?.requestAccessToken();
+    }
+}

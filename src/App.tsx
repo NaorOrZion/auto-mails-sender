@@ -1,6 +1,9 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Snackbar from "@mui/material/Snackbar";
 import PaperContent from "./PaperContent";
+import Alert from "@mui/material/Alert";
 import Paper from "@mui/material/Paper";
+import React from "react";
 import Info from "./Info";
 import "./css/App.css";
 
@@ -15,6 +18,12 @@ function App() {
             fontFamily: "Rubik, Arial",
         },
     });
+
+    const [openSuccessEmail, setOpenSuccessEmail] = React.useState(false);
+
+    const handleClose = (event: React.SyntheticEvent | Event) => {
+        setOpenSuccessEmail(false);
+    };
 
     return (
         <>
@@ -54,10 +63,24 @@ function App() {
                                         justifyContent: "start",
                                     }}
                                 >
-                                    <PaperContent />
+                                    <PaperContent setOpenSuccessEmail={setOpenSuccessEmail} />
                                 </Paper>
                             </div>
                         </div>
+                        <Snackbar
+                            open={openSuccessEmail}
+                            autoHideDuration={6000}
+                            onClose={handleClose}
+                            sx={{ direction: "rtl" }}
+                        >
+                            <Alert
+                                severity="success"
+                                variant="filled"
+                                sx={{ width: "100%", direction: "rtl"}}
+                            >
+                                {"המייל נשלח בהצלחה!"}
+                            </Alert>
+                        </Snackbar>
                     </div>
                 </div>
             </ThemeProvider>

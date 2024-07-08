@@ -134,6 +134,7 @@ const MultipleEmailsInput = ({
                     overflowY: "auto",
                     maxHeight: 100,
                     width: "100%",
+                    direction: "ltr",
                 }}
             >
                 {emails.map((email, index) => (
@@ -247,6 +248,7 @@ const MultipleEmailsInput = ({
                     variant="standard"
                     value={email}
                     className="mt-2"
+                    sx={{ direction: "ltr" }}
                     onChange={(e) => {
                         const value: string = e.target.value;
                         setEmail(value.trim());

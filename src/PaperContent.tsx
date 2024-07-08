@@ -1,63 +1,42 @@
 import RichTextEditorComponent from "./utils/RichTextEditorComponent";
+import GmailAuth, { handleSendEmailClick } from "./utils/GmailAuth";
 import { Box, Button, Divider } from "@mui/material";
-import { useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
 import MultiEmail from "./utils/MultipleEmailsInput";
-import sendEmail from "./utils/sendEmail";
+import TextField from "@mui/material/TextField";
 import UpperBar from "./UpperBar";
+import { useState, useEffect } from "react";
 
-// Declare the google namespace
-declare const google: any;
-
-const CLIENT_ID = "1049876237359-rvju9lfpr5c3egt7medntgh4lt3hpnmp.apps.googleusercontent.com";
-const SCOPES = "https://www.googleapis.com/auth/gmail.send";
-
-export default function PaperContent() {
+export default function PaperContent({
+    setOpenSuccessEmail,
+}: {
+    setOpenSuccessEmail: any;
+}) {
     // This comopnent stores all the components in the paper
 
     const [htmlResult, setHtmlResult] = useState<string>("");
     const [emails, setEmails] = useState<string[]>([]);
     const [subject, setSubject] = useState<string>("");
+
     const [isSignedIn, setIsSignedIn] = useState<Boolean>(false);
     const [accessToken, setAccessToken] = useState<string>("");
     const [tokenClient, setTokenClient] =
         useState<google.accounts.oauth2.TokenClient | null>(null);
 
+    // This function handles the authentication and sending of the email on component mount
     useEffect(() => {
-        const initClient = () => {
-            const tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: (response: any) => {
-                    if (response.access_token) {
-                        setAccessToken(response.access_token);
-                        setIsSignedIn(true);
-                    }
-                },
-            });
-            setTokenClient(tokenClient);
-        };
-
-        if (typeof google !== "undefined") {
-            initClient();
-        } else {
-            console.error("Google Identity Services library not loaded");
-        }
-    }, []);
-
-    const handleSendEmailClick = async () => {
-
-        if (isSignedIn) {
-            sendEmail(
-                emails.join(","),
+        // Ensure all required states are not empty or in their initial states
+        if (emails.length > 0 && subject && htmlResult) {
+            GmailAuth({
+                emails,
                 subject,
                 htmlResult,
-                accessToken
-            );
-        } else {
-            tokenClient?.requestAccessToken();
+                setOpenSuccessEmail,
+                setIsSignedIn,
+                setAccessToken,
+                setTokenClient,
+            });
         }
-    };
+    }, [emails, subject, htmlResult, setOpenSuccessEmail]); // Dependency array
 
     return (
         <>
@@ -74,13 +53,18 @@ export default function PaperContent() {
                 autoComplete="off"
                 onSubmit={(event) => {
                     event.preventDefault();
-                    handleSendEmailClick();
+                    handleSendEmailClick({
+                        emails,
+                        subject,
+                        htmlResult,
+                        setOpenSuccessEmail,
+                        isSignedIn,
+                        accessToken,
+                        tokenClient,
+                    });
                 }}
             >
-                <MultiEmail
-                    emails={emails}
-                    setEmails={setEmails}
-                />
+                <MultiEmail emails={emails} setEmails={setEmails} />
                 <TextField
                     className="mt-2 mb-3"
                     id="subject-textfield"

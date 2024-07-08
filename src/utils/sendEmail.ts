@@ -62,12 +62,14 @@ function replaceBase64ImagesWithBlobs(htmlBody: string): { newHtmlBody: string, 
  * @param subject | Subject of the email
  * @param body | Body of the email
  * @param accessToken | Access token to authenticate the request
+ * @param setOpenSuccessEmail | Function to set the success email state
  */
 export default async function sendEmail(
     email: string,
     subject: string,
     body: string,
-    accessToken: string
+    accessToken: string,
+    setOpenSuccessEmail : any
 ): Promise<void> {
     // Encode the subject in base64 to handle non-ASCII characters
     const encodedSubject: string = `=?UTF-8?B?${encode(subject)}?=`;
@@ -124,7 +126,8 @@ export default async function sendEmail(
             }),
         });
         const data = await response.json();
-        console.log("Email sent", data);
+        console.log(data);
+        setOpenSuccessEmail(true)
     } catch (error) {
         console.error("Error sending email", error);
     }
