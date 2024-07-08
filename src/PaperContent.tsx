@@ -2,9 +2,10 @@ import RichTextEditorComponent from "./utils/RichTextEditorComponent";
 import GmailAuth, { handleSendEmailClick } from "./utils/GmailAuth";
 import { Box, Button, Divider } from "@mui/material";
 import MultiEmail from "./utils/MultipleEmailsInput";
+import SendIcon from '@mui/icons-material/Send';
 import TextField from "@mui/material/TextField";
-import UpperBar from "./UpperBar";
 import { useState, useEffect } from "react";
+import UpperBar from "./UpperBar";
 
 interface PaperContentProps {
     setOpenSuccessEmail: React.Dispatch<React.SetStateAction<boolean>>;
@@ -87,7 +88,10 @@ export default function PaperContent({
 
                 <Divider sx={{ mt: 5, mb: 2 }} />
 
-                <Button type="submit">Save and display HTML</Button>
+                <Button variant="contained" type="submit" sx={{ direction: "rtl" , textAlign: "right"}}>
+                    שליחה
+                    <SendIcon sx={{ marginRight: "10px", transform: "rotate(180deg)"}} />
+                </Button>
             </Box>
         </>
     );

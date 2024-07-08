@@ -50,7 +50,7 @@ function App() {
                             }}
                         >
                             {/* Page Heading */}
-                            {/* <Info /> */}
+                            <Info />
                             {/* Begin Page Content */}
                             <div className="container-fluid row d-flex flex-column">
                                 <Paper
