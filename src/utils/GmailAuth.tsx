@@ -114,25 +114,26 @@ export async function handleSendEmailClick({
     setTextAlert,
     setStateAlert,
 }: any) {
-    if (isSignedIn) {
-        // set the text alert to a success message
-        setTextAlert("המייל נשלח בהצלחה!");
-        setStateAlert("success");
+    // Call the function to send the email
+    if (emails.length === 0) {
+        setTextAlert("למי לשלוח את ההודעה?");
+        setStateAlert("error");
+        setOpenSuccessEmail(true);
+    } else if (!subject) {
+        setTextAlert("ככה לשלוח בלי נושא?");
+        setStateAlert("error");
+        setOpenSuccessEmail(true);
+    } else if (!htmlResult) {
+        setTextAlert("למה לשלוח הודעה ריקה?");
+        setStateAlert("error");
+        setOpenSuccessEmail(true);
+    } else {
+        if (isSignedIn) {
+            // set the text alert to a success message
+            setTextAlert("המייל נשלח בהצלחה!");
+            setStateAlert("success");
 
-        // Call the function to send the email
-        if (emails.length === 0) {
-            setTextAlert("למי לשלוח את ההודעה?");
-            setStateAlert("error");
-            setOpenSuccessEmail(true);
-        } else if (!subject) {
-            setTextAlert("ככה לשלוח בלי נושא?");
-            setStateAlert("error");
-            setOpenSuccessEmail(true);
-        } else if (!htmlResult) {
-            setTextAlert("למה לשלוח הודעה ריקה?");
-            setStateAlert("error");
-            setOpenSuccessEmail(true);
-        } else {
+            // Send the email
             await sendEmail(
                 emails.join(","),
                 subject,
@@ -140,10 +141,12 @@ export async function handleSendEmailClick({
                 accessToken,
                 setOpenSuccessEmail
             );
+        } else {
+            // Set a flag to auto-send the email after signing in
+            localStorage.setItem("autoSendEmail", "true");
+
+            // Request the access token
+            tokenClient?.requestAccessToken();
         }
-    } else {
-        // Set a flag to auto-send the email after signing in
-        localStorage.setItem("autoSendEmail", "true");
-        tokenClient?.requestAccessToken();
     }
 }

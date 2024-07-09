@@ -11,7 +11,6 @@ interface PaperContentProps {
     setOpenSuccessEmail: React.Dispatch<React.SetStateAction<boolean>>;
     setTextAlert: React.Dispatch<React.SetStateAction<string>>;
     setStateAlert: React.Dispatch<React.SetStateAction<string>>;
-    // Add other states and their setter functions as needed
 }
 
 export default function PaperContent({
@@ -47,6 +46,18 @@ export default function PaperContent({
         }
     }, [emails, subject, htmlResult, setOpenSuccessEmail]); // Dependency array
 
+    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (isButtonDisabled) {
+            const timer = setTimeout(() => {
+                setIsButtonDisabled(false);
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isButtonDisabled]);
+
     return (
         <>
             <UpperBar />
@@ -62,6 +73,7 @@ export default function PaperContent({
                 autoComplete="off"
                 onSubmit={(event) => {
                     event.preventDefault();
+                    setIsButtonDisabled(true);
                     handleSendEmailClick({
                         emails,
                         subject,
@@ -88,9 +100,14 @@ export default function PaperContent({
 
                 <Divider sx={{ mt: 5, mb: 2 }} />
 
-                <Button variant="contained" type="submit" sx={{ direction: "rtl" , textAlign: "right"}}>
+                <Button
+                    variant="contained"
+                    type="submit"
+                    sx={{ direction: "rtl", textAlign: "right" }}
+                    disabled={isButtonDisabled}
+                >
                     שליחה
-                    <SendIcon sx={{ marginRight: "10px", transform: "rotate(180deg)"}} />
+                    <SendIcon sx={{ marginRight: "10px", transform: "rotate(180deg)" }} />
                 </Button>
             </Box>
         </>
