@@ -4,8 +4,7 @@ import sendEmail from "./sendEmail";
 // Declare the google namespace
 declare const google: any;
 
-const CLIENT_ID =
-    "1049876237359-rvju9lfpr5c3egt7medntgh4lt3hpnmp.apps.googleusercontent.com";
+const CLIENT_ID = "";
 const SCOPES = "https://www.googleapis.com/auth/gmail.send";
 
 /**
