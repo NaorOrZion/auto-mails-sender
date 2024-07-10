@@ -19,11 +19,11 @@ function App() {
         },
     });
 
-    const [openSuccessEmail, setOpenSuccessEmail] = React.useState<boolean>(false);
-    const [textAlert, setTextAlert] = React.useState<string>("המייל נשלח בהצלחה!");
-    const [stateAlert, setStateAlert] = React.useState<string>("success");
+    const [openSuccessEmail, setOpenSuccessEmail] = React.useState(false);
+    const [textAlert, setTextAlert] = React.useState("המייל נשלח בהצלחה!");
+    const [stateAlert, setStateAlert] = React.useState("success");
 
-    const handleClose = (event: React.SyntheticEvent | Event) => {
+    const handleClose = (event) => {
         setOpenSuccessEmail(false);
     };
 
@@ -82,14 +82,7 @@ function App() {
                             sx={{ direction: "rtl" }}
                         >
                             <Alert
-                                severity={
-                                    stateAlert as
-                                        | "success"
-                                        | "error"
-                                        | "info"
-                                        | "warning"
-                                        | undefined
-                                }
+                                severity={stateAlert}
                                 variant="filled"
                                 sx={{ width: "100%", direction: "rtl" }}
                             >

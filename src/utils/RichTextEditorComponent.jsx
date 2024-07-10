@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import {
@@ -52,7 +52,7 @@ import translations from 'ckeditor5/translations/he.js';
 
 import 'ckeditor5/ckeditor5.css';
 
-export default function RichTextEditorComponent({setHtmlResult} : any) {
+export default function RichTextEditorComponent({setHtmlResult}) {
 	const editorContainerRef = useRef(null);
 	const editorRef = useRef(null);
 	const [isLayoutReady, setIsLayoutReady] = useState(false);
@@ -63,7 +63,7 @@ export default function RichTextEditorComponent({setHtmlResult} : any) {
 		return () => setIsLayoutReady(false);
 	}, []);
 
-	const handleChange = async (event: any, editor: any) => {
+	const handleChange = async (event, editor) => {
 		const data = editor.getData();
 		await setHtmlResult(data);
 	}

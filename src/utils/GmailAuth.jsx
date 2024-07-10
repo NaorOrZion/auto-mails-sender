@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import sendEmail from "./sendEmail";
 
-// Declare the google namespace
-declare const google: any;
-
 const CLIENT_ID = "";
 const SCOPES = "https://www.googleapis.com/auth/gmail.send";
 
@@ -26,12 +23,12 @@ export default function GmailAuth({
     setIsSignedIn,
     setAccessToken,
     setTokenClient,
-}: any) {
+}) {
     const initClient = () => {
         const tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
-            callback: async (response: any) => {
+            callback: async (response) => {
                 if (response.access_token) {
                     // Save the access token in local storage
                     localStorage.setItem("accessToken", response.access_token);
@@ -112,7 +109,7 @@ export async function handleSendEmailClick({
     tokenClient,
     setTextAlert,
     setStateAlert,
-}: any) {
+}) {
     // Call the function to send the email
     if (emails.length === 0) {
         setTextAlert("למי לשלוח את ההודעה?");

@@ -6,28 +6,22 @@ import SendIcon from '@mui/icons-material/Send';
 import TextField from "@mui/material/TextField";
 import { useState, useEffect } from "react";
 import UpperBar from "./UpperBar";
-
-interface PaperContentProps {
-    setOpenSuccessEmail: React.Dispatch<React.SetStateAction<boolean>>;
-    setTextAlert: React.Dispatch<React.SetStateAction<string>>;
-    setStateAlert: React.Dispatch<React.SetStateAction<string>>;
-}
+import React from "react";
 
 export default function PaperContent({
     setOpenSuccessEmail,
     setTextAlert,
     setStateAlert,
-}: PaperContentProps) {
+}) {
     // This comopnent stores all the components in the paper
 
-    const [htmlResult, setHtmlResult] = useState<string>("");
-    const [emails, setEmails] = useState<string[]>([]);
-    const [subject, setSubject] = useState<string>("");
+    const [htmlResult, setHtmlResult] = useState("");
+    const [emails, setEmails] = useState([]);
+    const [subject, setSubject] = useState("");
 
-    const [isSignedIn, setIsSignedIn] = useState<Boolean>(false);
-    const [accessToken, setAccessToken] = useState<string>("");
-    const [tokenClient, setTokenClient] =
-        useState<google.accounts.oauth2.TokenClient | null>(null);
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [accessToken, setAccessToken] = useState("");
+    const [tokenClient, setTokenClient] = useState(null);
 
     // This function handles the authentication and sending of the email on component mount
     useEffect(() => {
@@ -46,7 +40,7 @@ export default function PaperContent({
         }
     }, [emails, subject, htmlResult, setOpenSuccessEmail]); // Dependency array
 
-    const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     useEffect(() => {
         if (isButtonDisabled) {

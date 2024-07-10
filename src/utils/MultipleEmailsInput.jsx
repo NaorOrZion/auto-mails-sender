@@ -1,9 +1,11 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import translationProps from "./translationProps";
-import { ReactSpreadsheetImport } from "react-spreadsheet-import";
 import UploadFileRoundedIcon from "@mui/icons-material/UploadFileRounded";
-import React, { useState } from "react";
 import { TextField, Chip, IconButton, Stack } from "@mui/material";
+import { ReactSpreadsheetImport } from "react-spreadsheet-import";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import customeThemeProps from "./CustomeThemeProps";
+import translationProps from "./TranslationProps";
+import React, { useState } from "react";
+import fields from "./FieldsExcel";
 
 // This component is a multiple email input field that allows users to add multiple emails
 // It uses a TextField to input the email and a Chip to display the emails
@@ -13,9 +15,6 @@ import { TextField, Chip, IconButton, Stack } from "@mui/material";
 const MultipleEmailsInput = ({
     emails,
     setEmails,
-}: {
-    emails: string[];
-    setEmails: React.Dispatch<React.SetStateAction<string[]>>;
 }) => {
     const [email, setEmail] = useState("");
 
@@ -39,15 +38,11 @@ const MultipleEmailsInput = ({
     };
 
     // Remove the email from the emails array
-    const handleDeleteEmail = (emailToDelete: string) => () => {
+    const handleDeleteEmail = (emailToDelete) => () => {
         setEmails(emails.filter((email) => email !== emailToDelete));
     };
 
-    function handleSubmit(data: {
-        all: object[];
-        invalidData: object[];
-        validData: object[];
-        }) {
+    function handleSubmit(data) {
         // Handle the submit event from the ReactSpreadsheetImport component
         // Add the valid emails to the emails array
         // The data object contains the following
@@ -57,70 +52,10 @@ const MultipleEmailsInput = ({
         const validRows = data.validData;
 
         // Add the valid emails to the emails array
-        setEmails([...emails, ...validRows.map((row: any) => row.email)]);
+        setEmails([...emails, ...validRows.map((row) => row.email)]);
     }
 
-    const fields = [
-        {
-            // Visible in table header and when matching columns.
-            label: "שם מלא",
-            // This is the key used for this field when we call onSubmit.
-            key: "fullName",
-            // Allows for better automatic column matching. Optional.
-            alternateMatches: ["שם", "שמות", "שמות מלאים", "שם חניך", "שם מלא"],
-            // Used when editing and validating information.
-            fieldType: {
-                // There are 3 types - "input" / "checkbox" / "select".
-                type: "input",
-            },
-            // Used in the first step to provide an example of what data is expected in this field. Optional.
-            example: "ישראל ישראלי",
-            // Can have multiple validations that are visible in Validation Step table.
-            validations: [
-                {
-                    // Can be "required" / "unique" / "regex"
-                    rule: "required",
-                    errorMessage: "יש להזין שם חניך",
-                    // There can be "info" / "warning" / "error" levels. Optional. Default "error".
-                    level: "error",
-                },
-            ],
-        },
-        {
-            // Visible in table header and when matching columns.
-            label: "מייל אזרחי",
-            // This is the key used for this field when we call onSubmit.
-            key: "email",
-            // Allows for better automatic column matching. Optional.
-            alternateMatches: ["אימייל", "מייל", "אימייל אזרחי"],
-            // Used when editing and validating information.
-            fieldType: {
-                // There are 3 types - "input" / "checkbox" / "select".
-                type: "input",
-            },
-            // Used in the first step to provide an example of what data is expected in this field. Optional.
-            example: "israelisraeli@gmail.com",
-            // Can have multiple validations that are visible in Validation Step table.
-            validations: [
-                {
-                    // Can be "required" / "unique" / "regex"
-                    rule: "required",
-                    errorMessage: "יש להזין מייל אזרחי",
-                    // There can be "info" / "warning" / "error" levels. Optional. Default "error".
-                    level: "error",
-                },
-                {
-                    // Can be "required" / "unique" / "regex"
-                    rule: "unique",
-                    errorMessage: "קיים מייל זהה בקובץ",
-                    // There can be "info" / "warning" / "error" levels. Optional. Default "error".
-                    level: "error",
-                },
-            ],
-        },
-    ] as const;
-
-    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <>
@@ -159,42 +94,7 @@ const MultipleEmailsInput = ({
                     onSubmit={handleSubmit}
                     fields={fields}
                     translations={translationProps}
-                    customTheme={{
-                        components: {
-                            Button: {
-                                baseStyle: {
-                                    borderRadius: "6px",
-                                },
-                            },
-                            UploadStep: {
-                                baseStyle: {
-                                    direction: "rtl",
-                                },
-                            },
-
-                            Modal: {
-                                baseStyle: {
-                                    dialog: {
-                                        direction: "rtl",
-                                    },
-                                },
-                            },
-                        },
-                        styles: {
-                            global: {
-                                // Set the global background color if applicable
-                                body: {
-                                    background:
-                                        "radial-gradient(circle at 50% -50%, #89fff6, white 70%) no-repeat",
-                                    backgroundSize: "100% 200%",
-                                    margin: 0,
-                                    placeItems: "center",
-                                    minWidth: 320,
-                                    minHeight: "100vh",
-                                },
-                            },
-                        },
-                    }}
+                    customTheme={customeThemeProps}
                     rowHook={(data, addError) => {
                         // This is a hook that will be called for each row in the spreadsheet.
                         // You can use it to validate the data in the row and add errors if needed.
@@ -250,7 +150,7 @@ const MultipleEmailsInput = ({
                     className="mt-2"
                     sx={{ direction: "ltr" }}
                     onChange={(e) => {
-                        const value: string = e.target.value;
+                        const value = e.target.value;
                         setEmail(value.trim());
                         if (value.endsWith(" ") || value.endsWith(";")) {
                             handleAddEmail(); // Trim the email before adding

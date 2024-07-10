@@ -4,11 +4,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import AppBar from "@mui/material/AppBar";
 import { Grid } from "@mui/material";
+import React from "react";
 
 export default function UpperBar() {
     // This component is the upper bar of the paper
 
-    const paperHeader: string = "New Message";
+    const paperHeader = "New Message";
 
     return (
         <>
