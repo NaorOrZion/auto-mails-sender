@@ -1,5 +1,12 @@
 import { encode } from "js-base64";
 
+/**
+ * This function converts a base64 string to a Blob
+ * @param b64Data | The base64 string to convert
+ * @param contentType | The content type of the Blob
+ * @param sliceSize | The slice size to use when converting
+ * @returns | The Blob object
+ */
 function b64toBlob(
     b64Data,
     contentType,
@@ -68,21 +75,36 @@ function replaceBase64ImagesWithBlobs(htmlBody) {
 }
 
 /**
- * This function sends an email using the Gmail API
- *
- * @param email | Email address to send the email to
- * @param subject | Subject of the email
- * @param body | Body of the email
- * @param accessToken | Access token to authenticate the request
- * @param setOpenSuccessEmail | Function to set the success email state
+ * Converts a Blob to a Base64 string
+ * @param blob | The Blob to convert
+ * @returns | A Promise that resolves to the Base64 string
  */
-export default async function sendEmail(
-    email,
-    subject,
-    body,
-    accessToken,
-    setOpenSuccessEmail
-) {
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64data = reader.result?.toString().split(",")[1];
+            if (base64data) {
+                resolve(base64data);
+            } else {
+                reject(new Error("Failed to convert blob to base64"));
+            }
+        };
+        reader.onerror = () => reject(new Error("FileReader error"));
+        reader.readAsDataURL(blob);
+    });
+}
+
+/**
+ * This function sends an email chunk using the Gmail API
+ * @param email (Array) | Email address to send the email to
+ * @param subject (String) | Subject of the email
+ * @param body (String) | Body of the email
+ * @param accessToken (String) | Access token to authenticate the request
+ * @param setOpenSuccessEmail | Function to set the success email state
+ * @returns | A Promise that resolves when the email is sent
+ */
+async function sendEmailChunk(emails, subject, body, accessToken, setOpenSuccessEmail) {
     // Encode the subject in base64 to handle non-ASCII characters
     const encodedSubject = `=?UTF-8?B?${encode(subject)}?=`;
 
@@ -93,7 +115,7 @@ export default async function sendEmail(
     const boundary = `boundary_${Math.random().toString(16).slice(2)}`;
     const parts = [
         `MIME-Version: 1.0`,
-        `to: ${email}`,
+        `to: ${emails}`,
         `subject: ${encodedSubject}`,
         `Content-Type: multipart/related; boundary="${boundary}"`,
         ``,
@@ -149,22 +171,36 @@ export default async function sendEmail(
 }
 
 /**
- * Converts a Blob to a Base64 string
- * @param blob | The Blob to convert
- * @returns | A Promise that resolves to the Base64 string
+ * This function handles the sending of an email to multiple recipients
+ * by chunking the recipients into groups of 100 and sending the email.
+ *
+ * @param email (Array) | Email address to send the email to
+ * @param subject (String) | Subject of the email
+ * @param body (String) | Body of the email
+ * @param accessToken (String) | Access token to authenticate the request
+ * @param setOpenSuccessEmail | Function to set the success email state
  */
-function blobToBase64(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64data = reader.result?.toString().split(",")[1];
-            if (base64data) {
-                resolve(base64data);
-            } else {
-                reject(new Error("Failed to convert blob to base64"));
-            }
-        };
-        reader.onerror = () => reject(new Error("FileReader error"));
-        reader.readAsDataURL(blob);
-    });
+export default async function sendEmail(
+    emails,
+    subject,
+    body,
+    accessToken,
+    setOpenSuccessEmail
+) {
+    // Chunk the emails into groups of 100 recipients
+    const max_recipients_per_message = 100;
+
+    // Calculate the number of chunks
+    const emailsChunks = Math.ceil(emails.length / max_recipients_per_message);
+
+    // Send an email chunk for each group of recipients
+    for (let i = 0; i < emailsChunks; i++) {
+        // Slice the emails array to get the current chunk
+        const emailsChunk = emails.slice(
+            i * max_recipients_per_message,
+            (i + 1) * max_recipients_per_message
+        ).join(",");
+
+        await sendEmailChunk(emailsChunk, subject, body, accessToken, setOpenSuccessEmail);
+    }
 }

@@ -51,7 +51,7 @@ export default function GmailAuth({
                     // Check if we need to send an email immediately after signing in
                     if (localStorage.getItem("autoSendEmail") === "true") {
                         const requestResponse = await sendEmail(
-                            emails.join(","),
+                            emails,
                             subject,
                             htmlResult,
                             response.access_token, // Use the fresh token
@@ -131,7 +131,7 @@ export async function handleSendEmailClick({
 
             // Send the email
             await sendEmail(
-                emails.join(","),
+                emails,
                 subject,
                 htmlResult,
                 accessToken,
